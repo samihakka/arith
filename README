@@ -1,0 +1,73 @@
+/**************************************************************
+ *
+ *                        HW4 arith
+ *
+ *     Assignment: CS40 HW4 arith
+ *     Authors: Sami Hakkarainen, Clark Bolin
+ *     UTLNs: shakka01, cbolin01
+ *     Date: 03/09/23
+ *
+ **************************************************************/
+
+
+Acknowledgments: 
+        We consulted each other on this project and a few TAs.
+
+Implemented Correctly: 
+        We believe that both the compression and decompression are correct,
+        and that our bitpack.c has been implemented correctly. We are currently
+        unaware of anything that does not work.
+
+Architechture:
+        Our code is split into 4 separate main modules, with sub steps outlined
+        in the names of our .c and .h files. 
+            1. File I/O:
+                This handles all the functions associated with reading in
+                and printing out information, as well as trimming the 
+                original ppm file to ensure that it has even amounts
+                of rows and cols.
+            
+
+            2. Pnm_rgb to Component Video:
+                This module converts Pnm_rgb unsigned integers to floats and
+                then into component video structs, which contain y, pb, and pr
+                values. It also goes back from component video structs to 
+                rgb floats and then to Pnm_rgb's. It uses two functions either
+                way to do this conversion, and each function receives and
+                exports a pixmap containing a new uarray with the newly
+                converted values in structs as its elements.
+                Three structs are contained in this module:
+                - Pnm_rgb: contains red, green, and blue values that are
+                           represented as unsigned ints
+                - rgb_floats: contains red, green, and blue values that are
+                           represented as floats
+                - Component_Video: contains y, pb, and pr values in floats
+                           that are calculated from the r, g, b floats.
+
+            3. Component Video to PrePack:
+                The PrePack struct we have defined in the program is a struct
+                containing the a, b, c, d, index_pb, and index_pr values in
+                their integer form. They are stored in these struct right
+                before bitpacking in module 4. In compression, transfer of data
+                types goes from Component Video -> Luminance Values -> PrePack.
+                The Luminance Values struct contains the pre-quantized, average
+                pb and pr values as well as the y values of each 2x2 block. 
+                Because component videos are stored by pixel and luminance 
+                values are stored by block, the sizes of the uarrays storing 
+                these values needs to be adjusted. When transferring to 
+                PrePack, all the values are quantized and put into their
+                final form before bitpacking.
+                Prepack: unsigned a, b, c, d, and
+                         index_pb & index_pr (quantized values)
+            4. PrePack to Codeword:
+                The PrePack struct described above contains everything we need
+                to pack our Codewords. Codewords are 32 bit unsigned ints, and
+                this module contains only two functions: one that packs the
+                values contained in PrePack into a codeword and one that takes
+                codewords in and converts them to the values in a PrePack
+                struct.
+                
+
+Time Spent: 
+        10 hours analyzing the problems
+        35 hours solving the problems post analysis
